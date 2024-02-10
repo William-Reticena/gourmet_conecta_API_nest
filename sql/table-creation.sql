@@ -95,3 +95,4 @@ CREATE TABLE IF NOT EXISTS address (
 --   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
 --   FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE
 -- );
+---

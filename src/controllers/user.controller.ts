@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 
 import { Address, User } from '../entities'
 
-import { UserService } from '../services/user.service'
+import { UserService } from '../services'
 
 import { AddAddressDto, CreateUserDto, ResponseDto } from '../dto'
 
@@ -55,5 +55,12 @@ export class UserController {
     const res = await this.userService.deleteAddress(addressId)
 
     return new ResponseDto('Address deleted', res)
+  }
+
+  @Delete(':userId')
+  async deleteUser(@Param('userId') userId: number): Promise<ResponseDto<User>> {
+    const res = await this.userService.deleteUser(userId)
+
+    return new ResponseDto('User deleted', res)
   }
 }

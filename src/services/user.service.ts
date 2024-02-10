@@ -5,7 +5,7 @@ import { Repository } from 'typeorm'
 import { Address, User } from '../entities'
 
 import { AddAddressDto, CreateUserDto } from '../dto'
-import { createAddressQuery, createUserQuery, deleteAddressQuery, getAddressByIdQuery, getAddressesQuery, getUserByIdQuery, getUsersQuery } from '../sql-queries'
+import { deleteQueries, insertQueries, selectQueries } from '../sql-queries'
 import { extractFromArray } from '../helpers'
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UserService {
 
   async getAllUsers(): Promise<User[]> {
     try {
-      const users = await this.userRepository.query(getUsersQuery)
+      const users = await this.userRepository.query(selectQueries.getUsersQuery)
 
       return users
     } catch (e) {
@@ -29,7 +29,7 @@ export class UserService {
 
   async getUserById(userId: number): Promise<User> {
     try {
-      const user = extractFromArray<User>(await this.userRepository.query(getUserByIdQuery, [userId]))
+      const user = extractFromArray<User>(await this.userRepository.query(selectQueries.getUserByIdQuery, [userId]))
 
       return user
     } catch (e) {
@@ -43,7 +43,7 @@ export class UserService {
     try {
       if (type > 3 || type < 1) throw new HttpException('Invalid role type', HttpStatus.BAD_REQUEST)
 
-      const userCreated = extractFromArray<User>(await this.userRepository.query(createUserQuery, [firstName, lastName, email, password, type]))
+      const userCreated = extractFromArray<User>(await this.userRepository.query(insertQueries.createUserQuery, [firstName, lastName, email, password, type]))
 
       return userCreated
     } catch (e) {
@@ -53,7 +53,7 @@ export class UserService {
 
   async getAllAddresses(): Promise<Address[]> {
     try {
-      const addresses = await this.addressRepository.query(getAddressesQuery)
+      const addresses = await this.addressRepository.query(selectQueries.getAddressesQuery)
 
       return addresses
     } catch (e) {
@@ -63,7 +63,7 @@ export class UserService {
 
   async getAddressById(addressId: number): Promise<Address> {
     try {
-      const address = extractFromArray<Address>(await this.addressRepository.query(getAddressByIdQuery, [addressId]))
+      const address = extractFromArray<Address>(await this.addressRepository.query(selectQueries.getAddressByIdQuery, [addressId]))
 
       if (!address) throw new HttpException('Address not found', HttpStatus.NOT_FOUND)
 
@@ -77,7 +77,7 @@ export class UserService {
     const { type, activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode } = addAddressDto
 
     try {
-      const addressCreated = extractFromArray<Address>(await this.addressRepository.query(createAddressQuery, [type, !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, 1]))
+      const addressCreated = extractFromArray<Address>(await this.addressRepository.query(insertQueries.createAddressQuery, [type, !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, 1]))
 
       return addressCreated
     } catch (e) {
@@ -87,9 +87,19 @@ export class UserService {
 
   async deleteAddress(addressId: number): Promise<Address> {
     try {
-      const address = extractFromArray<Address>(await this.addressRepository.query(deleteAddressQuery, [addressId]))
+      const address = extractFromArray<Address>(await this.addressRepository.query(deleteQueries.deleteAddressQuery, [addressId]))
 
       return address
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async deleteUser(userId: number): Promise<User> {
+    try {
+      const user = extractFromArray<User>(await this.userRepository.query(deleteQueries.deleteUserQuery, [userId]))
+
+      return user
     } catch (e) {
       console.error(e)
     }
