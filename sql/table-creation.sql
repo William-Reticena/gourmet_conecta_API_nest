@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS dish CASCADE;
 DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS role;
+------------------- TYPES CREATION -------------------
 DO $$ BEGIN IF NOT EXISTS (
   SELECT 1
   FROM pg_type
@@ -12,6 +13,25 @@ DO $$ BEGIN IF NOT EXISTS (
 ) THEN CREATE TYPE address_type AS ENUM ('residential', 'commercial', 'delivery');
 END IF;
 END $$;
+DO $$ BEGIN IF NOT EXISTS (
+  SELECT 1
+  FROM pg_type
+  WHERE typname = 'category_type'
+) THEN CREATE TYPE category_type AS ENUM (
+  'entrada',
+  'principal',
+  'sobremesa',
+  'bebida',
+  'salada',
+  'aperitivo',
+  'petisco',
+  'infantil',
+  'especial'
+);
+END IF;
+END $$;
+-------------------------------------------------------
+------------------- TABLES CREATION -------------------
 CREATE TABLE IF NOT EXISTS role (
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -19,14 +39,6 @@ CREATE TABLE IF NOT EXISTS role (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
------------------- INSERTS FOR ROLE -------------------
-INSERT INTO role (name, description, created_at, updated_at)
-VALUES ('admin', 'Administrator', NOW(), NOW());
-INSERT INTO role (name, description, created_at, updated_at)
-VALUES ('client', 'Client', NOW(), NOW());
-INSERT INTO role (name, description, created_at, updated_at)
-VALUES ('manager', 'Manager', NOW(), NOW());
--------------------------------------------------------
 CREATE TABLE IF NOT EXISTS "user" (
   id SERIAL PRIMARY KEY NOT NULL,
   role_id INTEGER,
@@ -57,42 +69,53 @@ CREATE TABLE IF NOT EXISTS address (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
--- CREATE TABLE IF NOT EXISTS operation_time (
---   id SERIAL PRIMARY KEY NOT NULL,
---   day_of_week VARCHAR(255) NOT NULL,
---   opening_time TIME NOT NULL,
---   closing_time TIME NOT NULL,
---   break_start_time TIME NOT NULL,
---   break_end_time TIME NOT NULL,
---   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
--- );
--- CREATE TABLE IF NOT EXISTS restaurant (
---   id SERIAL PRIMARY KEY NOT NULL,
---   operation_time_id SERIAL NOT NULL,
---   address_id SERIAL NOT NULL,
---   name VARCHAR(255) NOT NULL,
---   phone VARCHAR(255) NOT NULL,
---   email VARCHAR(255) NOT NULL,
---   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   FOREIGN KEY (operation_time_id) REFERENCES operation_time(id) ON DELETE CASCADE
--- );
--- CREATE TABLE IF NOT EXISTS menu (
---   id SERIAL PRIMARY KEY NOT NULL,
---   restaurant_id SERIAL NOT NULL,
---   category VARCHAR(255) NOT NULL,
---   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   FOREIGN KEY (restaurant_id) REFERENCES restaurant(id) ON DELETE CASCADE
--- );
--- CREATE TABLE IF NOT EXISTS dish (
---   id SERIAL PRIMARY KEY NOT NULL,
---   menu_id SERIAL NOT NULL,
---   name VARCHAR(255) NOT NULL,
---   price DECIMAL(10, 2) NOT NULL,
---   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE
--- );
----
+CREATE TABLE IF NOT EXISTS operation_time (
+  id SERIAL PRIMARY KEY NOT NULL,
+  day_of_week VARCHAR(20) NOT NULL,
+  opening_time TIME NOT NULL,
+  closing_time TIME NOT NULL,
+  break_start_time TIME,
+  break_end_time TIME,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS restaurant (
+  id SERIAL PRIMARY KEY NOT NULL,
+  operation_time_id INTEGER NOT NULL,
+  address_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  email VARCHAR(100),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (operation_time_id) REFERENCES operation_time(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS menu (
+  id SERIAL PRIMARY KEY NOT NULL,
+  restaurant_id INTEGER NOT NULL,
+  category category_type,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (restaurant_id) REFERENCES restaurant(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS dish (
+  id SERIAL PRIMARY KEY NOT NULL,
+  menu_id INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  ingredients TEXT NOT NULL,
+  photo_url VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE
+);
+-------------------------------------------------------
+------------------ INSERTS FOR ROLE -------------------
+INSERT INTO role (name, description, created_at, updated_at)
+VALUES ('admin', 'Administrator', NOW(), NOW());
+INSERT INTO role (name, description, created_at, updated_at)
+VALUES ('client', 'Client', NOW(), NOW());
+INSERT INTO role (name, description, created_at, updated_at)
+VALUES ('manager', 'Manager', NOW(), NOW());
+-------------------------------------------------------

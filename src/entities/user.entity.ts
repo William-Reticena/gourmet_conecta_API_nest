@@ -30,5 +30,5 @@ export class User {
 
   @OneToOne(() => Role, (role) => role.id)
   @JoinColumn({ name: 'role_id', referencedColumnName: 'id' })
-  role_id: Role
+  roleId: Role
 }
