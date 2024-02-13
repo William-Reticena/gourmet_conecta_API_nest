@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common'
+import { JoiPipe } from 'nestjs-joi'
 
 import { Dish, Menu, Restaurant } from '../entities'
 
@@ -14,7 +15,7 @@ export class RestaurantController {
   ) {}
 
   @Post('create')
-  async createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto): Promise<ResponseDto<Restaurant>> {
+  async createRestaurant(@Body(JoiPipe) createRestaurantDto: CreateRestaurantDto): Promise<ResponseDto<Restaurant>> {
     const address = await this.userService.createAddress(createRestaurantDto)
 
     const res = await this.restaurantService.createRestaurant(createRestaurantDto, address.id)

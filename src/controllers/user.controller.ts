@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
+import { JoiPipe } from 'nestjs-joi'
 
 import { Address, User } from '../entities'
 
@@ -37,7 +38,7 @@ export class UserController {
   }
 
   @Post('create')
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<ResponseDto<User>> {
+  async createUser(@Body(JoiPipe) createUserDto: CreateUserDto): Promise<ResponseDto<User>> {
     const res = await this.userService.createUser(createUserDto)
 
     return new ResponseDto('User created', res)
