@@ -1,10 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common'
 
-import { Menu, Restaurant } from '../entities'
+import { Dish, Menu, Restaurant } from '../entities'
 
 import { RestaurantService, UserService } from '../services'
 
-import { AddMenuDto, CreateRestaurantDto, ResponseDto } from '../dto'
+import { AddDishDto, AddMenuDto, CreateRestaurantDto, ResponseDto } from '../dto'
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -27,5 +27,12 @@ export class RestaurantController {
     const res = await this.restaurantService.createMenu(addMenuDto)
 
     return new ResponseDto('Menu created', res)
+  }
+
+  @Post('add-dish')
+  async createDish(@Body() addDishDto: AddDishDto): Promise<ResponseDto<Dish>> {
+    const res = await this.restaurantService.createDish(addDishDto)
+
+    return new ResponseDto('Dish created', res)
   }
 }

@@ -9,4 +9,9 @@ export const insertQueries = {
     VALUES ($1, $2, $3)
     RETURNING *;
   `,
+  createDish: `
+    INSERT INTO dish (name, price, ingredients, photo_url, type, menu_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *;
+  `,
 }

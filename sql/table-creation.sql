@@ -18,15 +18,46 @@ DO $$ BEGIN IF NOT EXISTS (
   FROM pg_type
   WHERE typname = 'category_type'
 ) THEN CREATE TYPE category_type AS ENUM (
-  'entrada',
-  'principal',
-  'sobremesa',
-  'bebida',
-  'salada',
-  'aperitivo',
-  'petisco',
-  'infantil',
-  'especial'
+  'Entrada',
+  'Principal',
+  'Sobremesa',
+  'Bebida',
+  'Salada',
+  'Aperitivo',
+  'Petisco',
+  'Infantil',
+  'Especial'
+);
+END IF;
+END $$;
+DO $$ BEGIN IF NOT EXISTS (
+  SELECT 1
+  FROM pg_type
+  WHERE typname = 'day_of_week_type'
+) THEN CREATE TYPE day_of_week_type AS ENUM (
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+);
+END IF;
+END $$;
+DO $$ BEGIN IF NOT EXISTS (
+  SELECT 1
+  FROM pg_type
+  WHERE typname = 'dish_type'
+) THEN CREATE TYPE dish_type AS ENUM (
+  'Doce',
+  'Salgado',
+  'Bebida',
+  'Vegetariano',
+  'Sem glúten',
+  'Sem lactose',
+  'Low carb',
+  'Gourmet'
 );
 END IF;
 END $$;
@@ -106,6 +137,7 @@ CREATE TABLE IF NOT EXISTS dish (
   id SERIAL PRIMARY KEY NOT NULL,
   menu_id INTEGER NOT NULL,
   name VARCHAR(100) NOT NULL,
+  type VARCHAR(50) NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
   ingredients TEXT NOT NULL,
   photo_url VARCHAR(255),

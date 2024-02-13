@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
-import { Menu, Restaurant } from '../entities'
+import { Dish, Menu, Restaurant } from '../entities'
 
-import { AddMenuDto, CreateRestaurantDto } from '../dto'
+import { AddDishDto, AddMenuDto, CreateRestaurantDto } from '../dto'
 import { extractFromArray } from '../helpers'
 import { insertQueries } from '../sql-queries/restaurant.query'
 
@@ -15,6 +15,8 @@ export class RestaurantService {
     private readonly restaurantRepository: Repository<Restaurant>,
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
+    @InjectRepository(Dish)
+    private readonly dishRepository: Repository<Dish>,
   ) {}
 
   async createRestaurant(createRestaurantDto: Pick<CreateRestaurantDto, 'name' | 'email' | 'phone'>, addressId: number): Promise<Restaurant> {
@@ -36,6 +38,18 @@ export class RestaurantService {
       const menuCreated = extractFromArray<Menu>(await this.menuRepository.query(insertQueries.createMenu, [name, 'especial', restaurantId]))
 
       return menuCreated
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async createDish(addDishDto: AddDishDto): Promise<Dish> {
+    const { name, ingredients, menuId, price, photoUrl, type } = addDishDto
+
+    try {
+      const dishCreated = extractFromArray<Dish>(await this.dishRepository.query(insertQueries.createDish, [name, price, ingredients, photoUrl, 'Petisco', menuId]))
+
+      return dishCreated
     } catch (e) {
       console.error(e)
     }
