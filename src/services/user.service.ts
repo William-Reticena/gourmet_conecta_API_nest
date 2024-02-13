@@ -5,7 +5,7 @@ import { Repository } from 'typeorm'
 import { Address, User } from '../entities'
 
 import { AddAddressDto, CreateUserDto } from '../dto'
-import { deleteQueries, insertQueries, selectQueries } from '../sql-queries'
+import { deleteQueries, insertQueries, selectQueries } from '../sql-queries/user.query'
 import { extractFromArray } from '../helpers'
 
 @Injectable()

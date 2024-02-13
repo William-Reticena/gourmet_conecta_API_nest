@@ -10,5 +10,6 @@ import { Address, Dish, Menu, OperationTime, Restaurant, Role, User } from '../e
   imports: [TypeOrmModule.forFeature([Address, Dish, Menu, OperationTime, Restaurant, Role, User])],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

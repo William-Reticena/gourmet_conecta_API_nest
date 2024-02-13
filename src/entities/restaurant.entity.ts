@@ -12,7 +12,7 @@ export class Restaurant {
   name: string
 
   @Column({ type: 'varchar', name: 'phone' })
-  description: string
+  phone: string
 
   @Column({ type: 'varchar', name: 'email' })
   email: string

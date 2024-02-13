@@ -69,19 +69,8 @@ CREATE TABLE IF NOT EXISTS address (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS operation_time (
-  id SERIAL PRIMARY KEY NOT NULL,
-  day_of_week VARCHAR(20) NOT NULL,
-  opening_time TIME NOT NULL,
-  closing_time TIME NOT NULL,
-  break_start_time TIME,
-  break_end_time TIME,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
 CREATE TABLE IF NOT EXISTS restaurant (
   id SERIAL PRIMARY KEY NOT NULL,
-  operation_time_id INTEGER NOT NULL,
   address_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -89,12 +78,26 @@ CREATE TABLE IF NOT EXISTS restaurant (
   email VARCHAR(100),
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  FOREIGN KEY (operation_time_id) REFERENCES operation_time(id) ON DELETE CASCADE
+  FOREIGN KEY (address_id) REFERENCES address(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS operation_time (
+  id SERIAL PRIMARY KEY NOT NULL,
+  restaurant_id INTEGER NOT NULL,
+  day_of_week VARCHAR(20) NOT NULL,
+  opening_time TIME NOT NULL,
+  closing_time TIME NOT NULL,
+  break_start_time TIME,
+  break_end_time TIME,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (restaurant_id) REFERENCES restaurant(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS menu (
   id SERIAL PRIMARY KEY NOT NULL,
   restaurant_id INTEGER NOT NULL,
-  category category_type,
+  name VARCHAR(100) NOT NULL,
+  category category_type NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   FOREIGN KEY (restaurant_id) REFERENCES restaurant(id) ON DELETE CASCADE
