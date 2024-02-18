@@ -24,14 +24,14 @@ export class RestaurantController {
   }
 
   @Post('add-menu')
-  async createMenu(@Body() addMenuDto: AddMenuDto): Promise<ResponseDto<Menu>> {
+  async createMenu(@Body(JoiPipe) addMenuDto: AddMenuDto): Promise<ResponseDto<Menu>> {
     const res = await this.restaurantService.createMenu(addMenuDto)
 
     return new ResponseDto('Menu created', res)
   }
 
   @Post('add-dish')
-  async createDish(@Body() addDishDto: AddDishDto): Promise<ResponseDto<Dish>> {
+  async createDish(@Body(JoiPipe) addDishDto: AddDishDto): Promise<ResponseDto<Dish>> {
     const res = await this.restaurantService.createDish(addDishDto)
 
     return new ResponseDto('Dish created', res)

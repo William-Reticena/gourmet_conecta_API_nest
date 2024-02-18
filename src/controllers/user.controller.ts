@@ -45,7 +45,7 @@ export class UserController {
   }
 
   @Post('address')
-  async createAddress(@Body() addAddressDto: AddAddressDto): Promise<ResponseDto<Address>> {
+  async createAddress(@Body(JoiPipe) addAddressDto: AddAddressDto): Promise<ResponseDto<Address>> {
     const res = await this.userService.createAddress(addAddressDto)
 
     return new ResponseDto('Address created', res)

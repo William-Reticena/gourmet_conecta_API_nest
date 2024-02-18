@@ -55,7 +55,7 @@ export class AddAddressSchema {
     'any.required': 'State is required',
   })
 
-  static country = Joi.string().min(3).max(50).required().messages({
+  static country = Joi.string().min(2).max(3).required().messages({
     'string.base': 'Country must be a string',
     'string.empty': 'Country cannot be empty',
     'string.min': 'Country must have at least {#limit} characters',
