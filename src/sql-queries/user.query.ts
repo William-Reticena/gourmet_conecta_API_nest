@@ -42,6 +42,11 @@ export const selectQueries = {
     SELECT *
     FROM "address";
   `,
+  getUserByEmailQuery: `
+    SELECT *
+    FROM "user"
+    WHERE email = $1;
+  `,
 }
 
 export const deleteQueries = {

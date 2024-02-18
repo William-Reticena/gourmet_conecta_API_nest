@@ -73,6 +73,16 @@ export class UserService {
     }
   }
 
+  async findByEmail(email: string): Promise<User> {
+    try {
+      const user = extractFromArray<User>(await this.userRepository.query(selectQueries.getUserByEmailQuery, [email]))
+
+      return user
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   async createAddress(addAddressDto: AddAddressDto): Promise<Address> {
     const { type, activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode } = addAddressDto
 
