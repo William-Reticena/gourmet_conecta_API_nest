@@ -11,11 +11,11 @@ import { AuthGuard } from '../guards/auth.guard'
 
 @Module({
   imports: [AuthModule, RestaurantModule, UserModule, TypeOrmModule.forRoot(dbConfig)],
-  // providers: [
-  //   {
-  //     provide: APP_GUARD,
-  //     useClass: AuthGuard,
-  //   },
-  // ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import * as bcrypt from 'bcrypt'
 
 import { Address, User } from '../entities'
 
@@ -41,9 +42,11 @@ export class UserService {
     const { firstName, lastName, email, password, type } = createUserDto
 
     try {
-      if (type > 3 || type < 1) throw new HttpException('Invalid role type', HttpStatus.BAD_REQUEST)
+      const hashedPassword = await bcrypt.hash(password, 10)
 
-      const userCreated = extractFromArray<User>(await this.userRepository.query(insertQueries.createUserQuery, [firstName, lastName, email, password, type]))
+      console.log(hashedPassword)
+
+      const userCreated = extractFromArray<User>(await this.userRepository.query(insertQueries.createUserQuery, [firstName, lastName, email, hashedPassword, type]))
 
       return userCreated
     } catch (e) {
@@ -71,6 +74,10 @@ export class UserService {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  async validatePassword(password: string, userPassword: string): Promise<boolean> {
+    return await bcrypt.compare(password, userPassword)
   }
 
   async findByEmail(email: string): Promise<User> {

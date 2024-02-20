@@ -5,6 +5,7 @@ import { Address, User } from '../entities'
 
 import { UserService } from '../services'
 
+import { Public } from '../constants'
 import { AddAddressDto, CreateUserDto, ResponseDto } from '../dto'
 
 @Controller('user')
@@ -37,6 +38,7 @@ export class UserController {
     return new ResponseDto('Users found', res)
   }
 
+  @Public()
   @Post('create')
   async createUser(@Body(JoiPipe) createUserDto: CreateUserDto): Promise<ResponseDto<User>> {
     const res = await this.userService.createUser(createUserDto)
