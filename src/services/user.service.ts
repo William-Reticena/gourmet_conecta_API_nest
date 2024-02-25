@@ -5,9 +5,10 @@ import * as bcrypt from 'bcrypt'
 
 import { Address, User } from '../entities'
 
-import { AddAddressDto, CreateUserDto } from '../dto'
+import { AddAddressDto, CreateUserDto } from '../dtos'
 import { deleteQueries, insertQueries, selectQueries } from '../sql-queries/user.query'
 import { extractFromArray } from '../helpers'
+import { IUser } from '../interfaces'
 
 @Injectable()
 export class UserService {
@@ -90,11 +91,11 @@ export class UserService {
     }
   }
 
-  async createAddress(addAddressDto: AddAddressDto): Promise<Address> {
+  async createAddress(addAddressDto: AddAddressDto, user: IUser): Promise<Address> {
     const { type, activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode } = addAddressDto
 
     try {
-      const addressCreated = extractFromArray<Address>(await this.addressRepository.query(insertQueries.createAddressQuery, [type, !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, 1]))
+      const addressCreated = extractFromArray<Address>(await this.addressRepository.query(insertQueries.createAddressQuery, [type, !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, user.id]))
 
       return addressCreated
     } catch (e) {

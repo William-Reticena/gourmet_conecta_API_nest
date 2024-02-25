@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common'
 import { JoiPipe } from 'nestjs-joi'
 
-import { Public } from '../constants'
-import { SignInDto } from '../dto'
+import { Public } from '../constant'
+import { SignInDto } from '../dtos'
 import { AuthService } from '../services'
 
 @Controller('auth')

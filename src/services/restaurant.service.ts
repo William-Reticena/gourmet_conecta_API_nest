@@ -4,8 +4,9 @@ import { Repository } from 'typeorm'
 
 import { Dish, Menu, Restaurant } from '../entities'
 
-import { AddDishDto, AddMenuDto, CreateRestaurantDto } from '../dto'
+import { AddDishDto, AddMenuDto, CreateRestaurantDto } from '../dtos'
 import { extractFromArray } from '../helpers'
+import { IUser } from '../interfaces'
 import { insertQueries } from '../sql-queries/restaurant.query'
 
 @Injectable()
@@ -19,11 +20,11 @@ export class RestaurantService {
     private readonly dishRepository: Repository<Dish>,
   ) {}
 
-  async createRestaurant(createRestaurantDto: Pick<CreateRestaurantDto, 'name' | 'email' | 'phone'>, addressId: number): Promise<Restaurant> {
+  async createRestaurant(createRestaurantDto: Pick<CreateRestaurantDto, 'name' | 'email' | 'phone'>, addressId: number, user: IUser): Promise<Restaurant> {
     const { name, email, phone } = createRestaurantDto
 
     try {
-      const restaurantCreated = extractFromArray<Restaurant>(await this.restaurantRepository.query(insertQueries.createRestaurant, [name, email, phone, addressId, 1]))
+      const restaurantCreated = extractFromArray<Restaurant>(await this.restaurantRepository.query(insertQueries.createRestaurant, [name, email, phone, addressId, user.id]))
 
       return restaurantCreated
     } catch (e) {

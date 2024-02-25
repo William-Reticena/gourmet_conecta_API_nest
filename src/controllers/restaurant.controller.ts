@@ -5,7 +5,7 @@ import { Dish, Menu, Restaurant } from '../entities'
 
 import { RestaurantService, UserService } from '../services'
 
-import { AddDishDto, AddMenuDto, CreateRestaurantDto, ResponseDto } from '../dto'
+import { AddDishDto, AddMenuDto, CreateRestaurantDto, ResponseDto } from '../dtos'
 
 @Controller('restaurant')
 export class RestaurantController {

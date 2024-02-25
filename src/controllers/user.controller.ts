@@ -5,8 +5,9 @@ import { Address, User } from '../entities'
 
 import { UserService } from '../services'
 
-import { Public } from '../constants'
-import { AddAddressDto, CreateUserDto, ResponseDto } from '../dto'
+import { GetUser, Public } from '../decorators'
+import { AddAddressDto, CreateUserDto, ResponseDto } from '../dtos'
+import { IUser } from '../interfaces'
 
 @Controller('user')
 export class UserController {
@@ -47,8 +48,8 @@ export class UserController {
   }
 
   @Post('address')
-  async createAddress(@Body(JoiPipe) addAddressDto: AddAddressDto): Promise<ResponseDto<Address>> {
-    const res = await this.userService.createAddress(addAddressDto)
+  async createAddress(@GetUser() user: IUser, @Body(JoiPipe) addAddressDto: AddAddressDto): Promise<ResponseDto<Address>> {
+    const res = await this.userService.createAddress(addAddressDto, user)
 
     return new ResponseDto('Address created', res)
   }
