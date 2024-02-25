@@ -46,4 +46,8 @@ export class Address {
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id' })
   userId: User
+
+  constructor(address?: Partial<Address>) {
+    Object.assign(this, address)
+  }
 }

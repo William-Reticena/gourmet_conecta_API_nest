@@ -30,5 +30,9 @@ export class User {
 
   @OneToOne(() => Role, (role) => role.id)
   @JoinColumn({ name: 'role_id', referencedColumnName: 'id' })
-  roleId: Role
+  roleId: number
+
+  constructor(user?: Partial<User>) {
+    Object.assign(this, user)
+  }
 }
