@@ -5,7 +5,7 @@ import { Repository } from 'typeorm'
 import { Dish, Menu, Restaurant } from '../entities'
 
 import { AddDishDto, AddMenuDto, CreateRestaurantDto } from '../dtos'
-import { extractFromArray } from '../helpers'
+import { extractFromArray, getDishStringValue, getMenuCategoryStringValue } from '../helpers'
 import { IUser } from '../interfaces'
 import { insertQueries } from '../sql-queries/restaurant.query'
 
@@ -33,10 +33,11 @@ export class RestaurantService {
   }
 
   async createMenu(addMenuDto: AddMenuDto): Promise<Menu> {
-    const { name, restaurantId } = addMenuDto
+    const { name, restaurantId, category } = addMenuDto
 
     try {
-      const menuCreated = extractFromArray<Menu>(await this.menuRepository.query(insertQueries.createMenu, [name, 'especial', restaurantId]))
+      const menuCategory = getMenuCategoryStringValue(category)
+      const menuCreated = extractFromArray<Menu>(await this.menuRepository.query(insertQueries.createMenu, [name, menuCategory, restaurantId]))
 
       return menuCreated
     } catch (e) {
@@ -48,7 +49,8 @@ export class RestaurantService {
     const { name, ingredients, menuId, price, photoUrl, type } = addDishDto
 
     try {
-      const dishCreated = extractFromArray<Dish>(await this.dishRepository.query(insertQueries.createDish, [name, price, ingredients, photoUrl, 'Petisco', menuId]))
+      const dishType = getDishStringValue(type)
+      const dishCreated = extractFromArray<Dish>(await this.dishRepository.query(insertQueries.createDish, [name, price, ingredients, photoUrl, dishType, menuId]))
 
       return dishCreated
     } catch (e) {

@@ -24,3 +24,15 @@ export enum DayOfWeekEnum {
   FRIDAY = 6,
   SATURDAY = 7,
 }
+
+export enum MenuCategoryTypeEnum {
+  ENTRADA = 1,
+  PRINCIPAL = 2,
+  SOBREMESA = 3,
+  BEBIDA = 4,
+  SALADA = 5,
+  APERITIVO = 6,
+  PETISCO = 7,
+  INFANTIL = 8,
+  LANCHE = 9,
+}

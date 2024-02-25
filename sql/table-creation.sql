@@ -5,62 +5,41 @@ DROP TABLE IF EXISTS dish CASCADE;
 DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS role;
+DROP TYPE IF EXISTS address_type;
+DROP TYPE IF EXISTS category_type;
+DROP TYPE IF EXISTS day_of_week_type;
 ------------------- TYPES CREATION -------------------
-DO $$ BEGIN IF NOT EXISTS (
-  SELECT 1
-  FROM pg_type
-  WHERE typname = 'address_type'
-) THEN CREATE TYPE address_type AS ENUM ('residential', 'commercial', 'delivery');
-END IF;
-END $$;
-DO $$ BEGIN IF NOT EXISTS (
-  SELECT 1
-  FROM pg_type
-  WHERE typname = 'category_type'
-) THEN CREATE TYPE category_type AS ENUM (
-  'Entrada',
-  'Principal',
-  'Sobremesa',
-  'Bebida',
-  'Salada',
-  'Aperitivo',
-  'Petisco',
-  'Infantil',
-  'Especial'
+CREATE TYPE address_type AS ENUM ('residential', 'commercial', 'delivery');
+CREATE TYPE category_type AS ENUM (
+  'ENTRADA',
+  'PRINCIPAL',
+  'SOBREMESA',
+  'BEBIDA',
+  'SALADA',
+  'APERITIVO',
+  'PETISCO',
+  'INFANTIL',
+  'LANCHE'
 );
-END IF;
-END $$;
-DO $$ BEGIN IF NOT EXISTS (
-  SELECT 1
-  FROM pg_type
-  WHERE typname = 'day_of_week_type'
-) THEN CREATE TYPE day_of_week_type AS ENUM (
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday'
+CREATE TYPE day_of_week_type AS ENUM (
+  'DOMINGO',
+  'SEGUNDA-FEIRA',
+  'TERÇA-FEIRA',
+  'QUARTA-FEIRA',
+  'QUINTA-FEIRA',
+  'SEXTA-FEIRA',
+  'SÁBADO'
 );
-END IF;
-END $$;
-DO $$ BEGIN IF NOT EXISTS (
-  SELECT 1
-  FROM pg_type
-  WHERE typname = 'dish_type'
-) THEN CREATE TYPE dish_type AS ENUM (
-  'Doce',
-  'Salgado',
-  'Bebida',
-  'Vegetariano',
-  'Sem glúten',
-  'Sem lactose',
-  'Low carb',
-  'Gourmet'
+CREATE TYPE dish_type AS ENUM (
+  'DOCE',
+  'SALGADO',
+  'BEBIDA',
+  'VEGETARIANO',
+  'SEM GLÚTEN',
+  'SEM LACTOSE',
+  'LOW CARB',
+  'GOURMET'
 );
-END IF;
-END $$;
 -------------------------------------------------------
 ------------------- TABLES CREATION -------------------
 CREATE TABLE IF NOT EXISTS role (
@@ -137,7 +116,7 @@ CREATE TABLE IF NOT EXISTS dish (
   id SERIAL PRIMARY KEY NOT NULL,
   menu_id INTEGER NOT NULL,
   name VARCHAR(100) NOT NULL,
-  type VARCHAR(50) NOT NULL,
+  type dish_type NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
   ingredients TEXT NOT NULL,
   photo_url VARCHAR(255),
