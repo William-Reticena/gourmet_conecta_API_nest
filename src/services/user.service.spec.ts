@@ -6,26 +6,7 @@ import { Address, User } from '../entities'
 
 import { UserService } from './user.service'
 
-const mockUser = [
-  new User({
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john_doe@hotmail.com',
-    password: '123456',
-    tokenValidation: '123456',
-    roleId: 1,
-  }),
-  new User({
-    id: 2,
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane@gmail.com',
-    password: '123456',
-    tokenValidation: '123456',
-    roleId: 2,
-  }),
-]
+import { mockUser } from '../mocks'
 
 describe('UserService', () => {
   let userService: UserService
@@ -68,11 +49,11 @@ describe('UserService', () => {
     })
 
     it('should throw an exception', async () => {
-      jest.spyOn(userRepository, 'query').mockRejectedValueOnce(new Error('Internal server error'))
+      jest.spyOn(userRepository, 'query').mockRejectedValueOnce(new Error())
 
-      const result = await userService.getAllUsers()
+      const result = userService.getAllUsers()
 
-      expect(result).toThrowError('Internal server error')
+      expect(result).rejects.toThrow()
     })
   })
 })

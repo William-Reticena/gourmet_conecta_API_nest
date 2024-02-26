@@ -25,7 +25,7 @@ export class UserService {
 
       return users
     } catch (e) {
-      console.error(e)
+      throw new Error('Internal server error')
     }
   }
 
