@@ -24,7 +24,7 @@ export class RestaurantService {
     const { name, email, phone } = createRestaurantDto
 
     try {
-      const restaurantCreated = extractFromArray<Restaurant>(await this.restaurantRepository.query(insertQueries.createRestaurant, [name, email, phone, addressId, user.id]))
+      const restaurantCreated = extractFromArray<Restaurant>(await this.restaurantRepository.query(insertQueries.createRestaurant, [name, email, phone, addressId, user.sub]))
 
       return restaurantCreated
     } catch (e) {

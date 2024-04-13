@@ -7,7 +7,8 @@ import dbConfig from '../configurations/db-config'
 import { AuthModule } from './auth.module'
 import { RestaurantModule } from './restaurant.module'
 import { UserModule } from './user.module'
-import { AuthGuard } from '../guards/auth.guard'
+// import { CustomExceptionFilter } from '../filters'
+import { AuthGuard } from '../guards'
 
 @Module({
   imports: [AuthModule, RestaurantModule, UserModule, TypeOrmModule.forRoot(dbConfig)],
@@ -16,6 +17,10 @@ import { AuthGuard } from '../guards/auth.guard'
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: CustomExceptionFilter,
+    // },
   ],
 })
 export class AppModule {}

@@ -36,8 +36,6 @@ describe('UserController', () => {
   it('should return an array of users', async () => {
     const result = await userController.getUsers()
 
-    console.log(result, 'resul')
-
     expect(result).toEqual({ message: 'Users found', data: mockUser })
   })
 })

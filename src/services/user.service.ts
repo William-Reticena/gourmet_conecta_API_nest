@@ -7,7 +7,7 @@ import { Address, User } from '../entities'
 
 import { AddAddressDto, CreateUserDto } from '../dtos'
 import { deleteQueries, insertQueries, selectQueries } from '../sql-queries/user.query'
-import { extractFromArray } from '../helpers'
+import { RepositoryManager, extractFromArray } from '../helpers'
 import { IUser } from '../interfaces'
 
 @Injectable()
@@ -45,9 +45,7 @@ export class UserService {
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
 
-      console.log(hashedPassword)
-
-      const userCreated = extractFromArray<User>(await this.userRepository.query(insertQueries.createUserQuery, [firstName, lastName, email, hashedPassword, type]))
+      const userCreated = RepositoryManager.create<User>(this.userRepository, insertQueries.createUserQuery, { firstName, lastName, email, password: hashedPassword, roleId: type })
 
       return userCreated
     } catch (e) {
@@ -95,7 +93,7 @@ export class UserService {
     const { type, activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode } = addAddressDto
 
     try {
-      const addressCreated = extractFromArray<Address>(await this.addressRepository.query(insertQueries.createAddressQuery, [type, !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, user.id]))
+      const addressCreated = RepositoryManager.create<Address>(this.addressRepository, insertQueries.createAddressQuery, { type, activeForDelivery: !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, userId: user.sub as unknown as User })
 
       return addressCreated
     } catch (e) {
