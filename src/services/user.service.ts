@@ -21,7 +21,7 @@ export class UserService {
 
   async getAllUsers(): Promise<User[]> {
     try {
-      const users = await this.userRepository.query(selectQueries.getUsersQuery)
+      const users = RepositoryManager.findAll(this.userRepository, selectQueries.getUsersQuery)
 
       return users
     } catch (e) {
@@ -31,7 +31,7 @@ export class UserService {
 
   async getUserById(userId: number): Promise<User> {
     try {
-      const user = RepositoryManager.find<User>(this.userRepository, selectQueries.getUserByIdQuery, { id: userId })
+      const user = RepositoryManager.find(this.userRepository, selectQueries.getUserByIdQuery, { id: userId })
 
       return user
     } catch (e) {
@@ -45,7 +45,13 @@ export class UserService {
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
 
-      const userCreated = RepositoryManager.create<User>(this.userRepository, insertQueries.createUserQuery, { firstName, lastName, email, password: hashedPassword, roleId: type })
+      const userCreated = RepositoryManager.create(this.userRepository, insertQueries.createUserQuery, {
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        roleId: type,
+      })
 
       return userCreated
     } catch (e) {
@@ -55,7 +61,7 @@ export class UserService {
 
   async getAllAddresses(): Promise<Address[]> {
     try {
-      const addresses = await this.addressRepository.query(selectQueries.getAddressesQuery)
+      const addresses = RepositoryManager.findAll(this.addressRepository, selectQueries.getAddressesQuery)
 
       return addresses
     } catch (e) {
@@ -65,7 +71,7 @@ export class UserService {
 
   async getAddressById(addressId: number): Promise<Address> {
     try {
-      const address = extractFromArray<Address>(await this.addressRepository.query(selectQueries.getAddressByIdQuery, [addressId]))
+      const address = RepositoryManager.find(this.addressRepository, selectQueries.getAddressByIdQuery, { id: addressId })
 
       if (!address) throw new HttpException('Address not found', HttpStatus.NOT_FOUND)
 
@@ -81,7 +87,7 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User> {
     try {
-      const user = extractFromArray<User>(await this.userRepository.query(selectQueries.getUserByEmailQuery, [email]))
+      const user = RepositoryManager.find(this.userRepository, selectQueries.getUserByEmailQuery, { email })
 
       return user
     } catch (e) {
@@ -93,7 +99,19 @@ export class UserService {
     const { type, activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode } = addAddressDto
 
     try {
-      const addressCreated = RepositoryManager.create<Address>(this.addressRepository, insertQueries.createAddressQuery, { type, activeForDelivery: !!activeForDelivery, street, number, complement, neighborhood, city, state, country, zipCode, userId: user.sub as unknown as User })
+      const addressCreated = RepositoryManager.create(this.addressRepository, insertQueries.createAddressQuery, {
+        type,
+        activeForDelivery: !!activeForDelivery,
+        street,
+        number,
+        complement,
+        neighborhood,
+        city,
+        state,
+        country,
+        zipCode,
+        userId: user.sub as unknown as User,
+      })
 
       return addressCreated
     } catch (e) {

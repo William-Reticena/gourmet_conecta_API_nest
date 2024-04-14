@@ -60,7 +60,8 @@ export class RepositoryManager {
   }
 
   private static ensureParamsValuesMatchQuery(paramsFromQuery: string[], expectedKeys: Record<string, any>[]): any[] {
-    if (paramsFromQuery.length !== expectedKeys.length) throw new Error(`Expected ${expectedKeys.length} parameters, but received ${paramsFromQuery.length}`)
+    if (paramsFromQuery.length !== expectedKeys.length)
+      throw new Error(`Expected ${expectedKeys.length} parameters, but received ${paramsFromQuery.length}`)
 
     return paramsFromQuery.map((param) => {
       const expectedKey = expectedKeys.find((key) => key.transformedKey === param)
@@ -91,7 +92,7 @@ export class RepositoryManager {
     }
   }
 
-  static async create<T>(repository: Repository<T>, createQuery: string, params: Partial<T>): Promise<T> {
+  static async create<T = unknown>(repository: Repository<T>, createQuery: string, params: Partial<T>): Promise<T> {
     try {
       return this.execQuery<T>(repository, createQuery, params)
     } catch (e) {
@@ -99,9 +100,27 @@ export class RepositoryManager {
     }
   }
 
-  static async find<T>(repository: Repository<T>, findQuery: string, params: Partial<T>): Promise<T> {
+  static async find<T = unknown>(repository: Repository<T>, findQuery: string, params: Partial<T>): Promise<T> {
     try {
       return this.execQuery<T>(repository, findQuery, params)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  static async findAll<T = unknown>(repository: Repository<T>, findAllQuery: string): Promise<T[]> {
+    try {
+      const entities = await repository.query(findAllQuery)
+
+      return entities
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  static async delete<T = unknown>(repository: Repository<T>, deleteQuery: string, params: Partial<T>): Promise<T> {
+    try {
+      return this.execQuery<T>(repository, deleteQuery, params)
     } catch (e) {
       console.error(e)
     }
