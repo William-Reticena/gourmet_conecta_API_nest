@@ -31,7 +31,7 @@ export class UserService {
 
   async getUserById(userId: number): Promise<User> {
     try {
-      const user = extractFromArray<User>(await this.userRepository.query(selectQueries.getUserByIdQuery, [userId]))
+      const user = RepositoryManager.find<User>(this.userRepository, selectQueries.getUserByIdQuery, { id: userId })
 
       return user
     } catch (e) {
